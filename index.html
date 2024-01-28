@@ -1,0 +1,328 @@
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            background-color: #ffffff; /* Fond blanc */
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        header {
+            background-color: #333;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .search-bar {
+            max-width: 600px;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .search-bar input {
+            padding: 8px;
+            border: none;
+            border-radius: 4px 0 0 4px;
+        }
+
+        .search-bar button {
+            padding: 8px;
+            border: none;
+            border-radius: 0 4px 4px 0;
+            background-color: #4CAF50; /* Couleur de bouton vert */
+            color: white;
+            cursor: pointer;
+        }
+
+        .user-actions {
+            display: flex;
+            align-items: center;
+        }
+
+        #my-account-btn {
+            display: none;
+            cursor: pointer;
+            background-color: #4CAF50; /* Couleur de bouton vert */
+            color: white;
+            padding: 8px;
+            border-radius: 4px;
+            margin-left: 10px;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 160px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+            z-index: 1;
+            text-align: right;
+        }
+
+        .dropdown-content button {
+            padding: 8px;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            text-align: left;
+        }
+
+        #change-pseudo-btn {
+            background-color: #4CAF50; /* Couleur de bouton vert */
+            color: white;
+        }
+
+        #logout-btn {
+            background-color: #ff4444; /* Couleur de bouton rouge */
+            color: white;
+        }
+
+        .login-modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 20px;
+            background-color: #f0f0f0; /* Fond gris clair pour la boîte de connexion */
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .login-modal input {
+            margin-bottom: 10px;
+            padding: 8px;
+        }
+
+        .login-modal button {
+            padding: 10px;
+            border: none;
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .verification-modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 20px;
+            background-color: #f0f0f0; /* Fond gris clair pour la boîte de vérification */
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .verification-modal input {
+            margin-bottom: 10px;
+            padding: 8px;
+        }
+
+        .verification-modal button {
+            padding: 10px;
+            border: none;
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .main {
+            text-align: center;
+            padding: 20px;
+            color: #333; /* Couleur du texte principal */
+        }
+
+        .publish-container {
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #f0f0f0; /* Fond gris clair pour la zone de publication */
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        textarea {
+            width: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+            margin-bottom: 10px;
+        }
+
+        button {
+            padding: 10px;
+            border: none;
+            color: white;
+            cursor: pointer;
+            border-radius: 4px;
+            margin-left: 10px;
+        }
+
+        .published-text {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f0f0f0;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+    <title>Votre Site Web</title>
+</head>
+<body>
+
+    <header>
+        <div class="search-bar">
+            <input type="text" placeholder="Rechercher...">
+            <button type="button">Rechercher</button>
+        </div>
+        <div class="user-actions">
+            <span id="my-account-btn" onclick="toggleDropdown()">Mon compte</span>
+            <button id="login-btn" onclick="toggleLogin()">Se connecter</button>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="publish-container">
+            <textarea placeholder="Écrivez votre texte ici..."></textarea>
+            <button type="button" onclick="publishText()">Publier</button>
+        </div>
+        <div id="publishedText" class="published-text"></div>
+    </main>
+
+    <div id="login-modal" class="login-modal">
+        <input type="text" id="email-input" placeholder="Votre adresse e-mail">
+        <button onclick="sendVerificationCode()">Se connecter</button>
+    </div>
+
+    <div id="verification-modal" class="verification-modal">
+        <input type="text" id="verification-code" placeholder="Code de vérification">
+        <button onclick="verifyCode()">Vérifier</button>
+    </div>
+
+    <div id="dropdown-content" class="dropdown-content">
+        <button id="change-pseudo-btn" onclick="editUsername()">Changer de pseudo</button>
+        <button id="logout-btn" onclick="logout()">Se déconnecter</button>
+    </div>
+
+    <script>
+        var loggedIn = false;
+        var username = "";
+        var verificationCode;
+
+        function toggleLogin() {
+            var loginBtn = document.getElementById('login-btn');
+            if (loggedIn) {
+                logout();
+            } else {
+                openLoginModal();
+            }
+            updateUI();
+        }
+
+        function openLoginModal() {
+            var loginModal = document.getElementById('login-modal');
+            loginModal.style.display = 'block';
+        }
+
+        function sendVerificationCode() {
+            var email = document.getElementById('email-input').value;
+            if (email && email.endsWith('@gmail.com')) {
+                loggedIn = true;
+                username = email.split('@')[0];
+                closeLoginModal();
+                openVerificationModal();
+
+                verificationCode = Math.floor(100 + Math.random() * 900);
+                alert("Un code de vérification a été envoyé à votre adresse e-mail.");
+
+                // Vous devriez également envoyer ce code côté serveur pour une vérification sécurisée.
+            }
+            updateUI();
+        }
+
+        function openVerificationModal() {
+            var verificationModal = document.getElementById('verification-modal');
+            verificationModal.style.display = 'block';
+        }
+
+        function verifyCode() {
+            var enteredCode = document.getElementById('verification-code').value;
+            if (enteredCode == verificationCode) {
+                closeVerificationModal();
+                alert("Code vérifié avec succès. Vous êtes connecté !");
+                updateUI();
+            } else {
+                alert("Code incorrect. Veuillez réessayer.");
+            }
+        }
+
+        function closeLoginModal() {
+            var loginModal = document.getElementById('login-modal');
+            loginModal.style.display = 'none';
+        }
+
+        function closeVerificationModal() {
+            var verificationModal = document.getElementById('verification-modal');
+            verificationModal.style.display = 'none';
+        }
+
+        function toggleDropdown() {
+            var dropdownContent = document.getElementById('dropdown-content');
+            if (dropdownContent.style.display === 'block') {
+                dropdownContent.style.display = 'none';
+            } else {
+                dropdownContent.style.display = 'block';
+            }
+        }
+
+        function editUsername() {
+            var newUsername = prompt("Modifiez votre pseudo :", username);
+            if (newUsername) {
+                username = newUsername;
+                updateUI();
+            }
+        }
+
+        function updateUI() {
+            var myAccountBtn = document.getElementById('my-account-btn');
+            var loginBtn = document.getElementById('login-btn');
+
+            if (loggedIn) {
+                myAccountBtn.style.display = 'inline-block';
+                myAccountBtn.textContent = 'Mon compte';
+                loginBtn.textContent = 'Se déconnecter';
+            } else {
+                myAccountBtn.style.display = 'none';
+                loginBtn.textContent = 'Se connecter';
+            }
+        }
+
+        function publishText() {
+            var textAreaValue = document.querySelector('textarea').value;
+            var publishedTextDiv = document.getElementById('publishedText');
+
+            if (loggedIn) {
+                publishedTextDiv.innerHTML += "<p><strong>" + username + ":</strong> " + textAreaValue + "</p>";
+            } else {
+                publishedTextDiv.innerHTML += "<p>" + textAreaValue + "</p>";
+            }
+        }
+
+        function logout() {
+            loggedIn = false;
+            username = "";
+            updateUI();
+            alert("Vous êtes déconnecté.");
+        }
+    </script>
+
+</body>
+</html>
